@@ -7,24 +7,107 @@ let sleepTimer = null;
 let mouseIdleTimer = null;
 let isTrackingMouse = false;
 
-// Pautan Fail Audio (Sedia untuk dimuat naik ke folder 'sounds/' di GitHub)
-const sounds = {
-  normal: new Audio('sounds/normal.mp3'),
-  happy: new Audio('sounds/happy.mp3'),
-  sad: new Audio('sounds/sad.mp3'),
-  angry: new Audio('sounds/angry.mp3'),
-  surprised: new Audio('sounds/surprised.mp3'),
-  sleep: new Audio('sounds/sleep.mp3'),
-  wake: new Audio('sounds/wake.mp3')
-};
+// -------------------------------------------------------------
+// WEB AUDIO API - Penjanaan Bunyi Robotik (Wall-E / Emo Pet)
+// -------------------------------------------------------------
+let audioCtx = null;
 
-function playSound(name) {
-  if (sounds[name]) {
-    sounds[name].currentTime = 0;
-    sounds[name].play().catch(() => {}); // Elak error jika audio belum sedia
+function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
 }
 
+function playSound(emotion) {
+  initAudio();
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  const now = audioCtx.currentTime;
+
+  if (emotion === 'happy') {
+    // Chirp melompat naik gembira
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(400, now);
+    osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
+    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.2);
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+    osc.start(now);
+    osc.stop(now + 0.3);
+
+  } else if (emotion === 'sad') {
+    // Nada perlahan menurun merajuk
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(500, now);
+    osc.frequency.exponentialRampToValueAtTime(150, now + 0.4);
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+    osc.start(now);
+    osc.stop(now + 0.4);
+
+  } else if (emotion === 'angry') {
+    // Bip kasar & bergetar cepat
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(220, now);
+    osc.frequency.setValueAtTime(160, now + 0.08);
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+    osc.start(now);
+    osc.stop(now + 0.2);
+
+  } else if (emotion === 'surprised') {
+    // Pitch tinggi mendadak
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(300, now);
+    osc.frequency.exponentialRampToValueAtTime(1600, now + 0.15);
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+    osc.start(now);
+    osc.stop(now + 0.2);
+
+  } else if (emotion === 'normal') {
+    // Bip pendek berkembar
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, now);
+    osc.frequency.setValueAtTime(900, now + 0.08);
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+    osc.start(now);
+    osc.stop(now + 0.15);
+
+  } else if (emotion === 'wake') {
+    // Power up chime
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(350, now);
+    osc.frequency.exponentialRampToValueAtTime(700, now + 0.1);
+    osc.frequency.exponentialRampToValueAtTime(1050, now + 0.25);
+    gain.gain.setValueAtTime(0.25, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+    osc.start(now);
+    osc.stop(now + 0.3);
+
+  } else if (emotion === 'sleep') {
+    // Dengkuran robotik berayun lembut
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(200, now);
+    osc.frequency.exponentialRampToValueAtTime(110, now + 0.6);
+    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+    osc.start(now);
+    osc.stop(now + 0.6);
+  }
+}
+
+// -------------------------------------------------------------
+// LOGIK TUKAR EMOSI & KAWALAN WIDGET
+// -------------------------------------------------------------
 function setExpression(exp) {
   currentExpression = exp;
   // Reset sebarang pergerakan jelingan mata tetikus
