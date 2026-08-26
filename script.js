@@ -98,6 +98,14 @@ function playSound(emotion) {
   }
 }
 
+// Mengemaskini pemasa automatik 1 minit supaya bunyi sentiasa dimainkan
+setInterval(() => {
+  if (currentExpression !== 'sleep' && !isTrackingMouse) {
+    const nextExp = expressions[Math.floor(Math.random() * expressions.length)];
+    setExpression(nextExp, true); // Pastikan parameter kedua adalah true
+  }
+}, 60000);
+
 // -------------------------------------------------------------
 // LOGIK TUKAR EMOSI & KAWALAN WIDGET
 // -------------------------------------------------------------
