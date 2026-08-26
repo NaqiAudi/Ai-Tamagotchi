@@ -165,13 +165,13 @@ robotHead.addEventListener('click', (e) => {
   }
 });
 
-// 3. Tukar Emosi Automatik Setiap 1 Minit
+// 3. Tukar Emosi Automatik Setiap 30 Saat
 setInterval(() => {
   if (currentExpression !== 'sleep' && !isTrackingMouse) {
     const nextExp = expressions[Math.floor(Math.random() * expressions.length)];
     setExpression(nextExp);
   }
-}, 60000);
+}, 30000); // <-- 30000 bermaksud 30 saat
 
 // 4. Auto-Blink & Jeling Automatik
 setInterval(() => {
