@@ -38,20 +38,24 @@ function setEmotionUI(emotionClass) {
 
 // Fungsi utama panggil Gemini API
 async function callGeminiAPI(key, prompt) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
+  // Guna model gemini-1.5-flash yang standard
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
 
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       contents: [{
-        parts: [{ text: prompt }]
-      }],
-      systemInstruction: {
-        parts: [{ text: "Bertindak sebagai peliharaan digital Tamagotchi yang comel. Sentiasa beri respon ringkas dalam Bahasa Melayu." }]
-      }
+        parts: [{ text: "Bertindak sebagai peliharaan digital Tamagotchi yang comel. Jawab dalam Bahasa Melayu kurang 10 perkataan: " + prompt }]
+      }]
     })
   });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    console.error("Gemini Error:", errorData);
+    throw new Error("API call failed");
+  }
 
   const data = await response.json();
   return data.candidates[0].content.parts[0].text;
