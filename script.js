@@ -117,16 +117,17 @@ function setExpression(exp, playCustomSound = true) {
   resetInactivityTimer();
 }
 
-// 1. Penjejakan Tetikus (Mouse Tracking) & Pemasa 15 Saat
+// Penjejakan Tetikus (Mouse Tracking)
 document.addEventListener('mousemove', (e) => {
   if (currentExpression === 'sleep') return;
 
   isTrackingMouse = true;
-  visor.className = 'visor'; // Reset ke mod pandang biasa semasa mengikut tetikus
+  visor.className = 'visor'; 
 
   const eyes = document.querySelectorAll('.eye');
-  const x = (e.clientX / window.innerWidth - 0.5) * 35;
-  const y = (e.clientY / window.innerHeight - 0.5) * 25;
+  // Nisbah jarak mata diselaraskan dengan saiz muka baharu
+  const x = (e.clientX / window.innerWidth - 0.5) * 45;
+  const y = (e.clientY / window.innerHeight - 0.5) * 32;
 
   eyes.forEach(eye => {
     eye.style.transform = `translate(${x}px, ${y}px)`;
@@ -134,11 +135,9 @@ document.addEventListener('mousemove', (e) => {
 
   resetInactivityTimer();
 
-  // Reset pemasa 15 saat setiap kali tetikus digerakkan
   clearTimeout(mouseIdleTimer);
   mouseIdleTimer = setTimeout(() => {
     isTrackingMouse = false;
-    // Sambung automatik emosi selepas 15 saat tetikus berhenti
     const nextExp = expressions[Math.floor(Math.random() * expressions.length)];
     setExpression(nextExp);
   }, 15000);
