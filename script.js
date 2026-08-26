@@ -8,7 +8,7 @@ let mouseIdleTimer = null;
 let isTrackingMouse = false;
 
 // -------------------------------------------------------------
-// WEB AUDIO API - Penjanaan Bunyi Robotik (Wall-E / Emo Pet)
+// WEB AUDIO API - Penjanaan Bunyi Robotik
 // -------------------------------------------------------------
 let audioCtx = null;
 
@@ -32,7 +32,6 @@ function playSound(emotion) {
   const now = audioCtx.currentTime;
 
   if (emotion === 'happy') {
-    // Chirp melompat naik gembira
     osc.type = 'sine';
     osc.frequency.setValueAtTime(400, now);
     osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
@@ -43,7 +42,6 @@ function playSound(emotion) {
     osc.stop(now + 0.3);
 
   } else if (emotion === 'sad') {
-    // Nada perlahan menurun merajuk
     osc.type = 'triangle';
     osc.frequency.setValueAtTime(500, now);
     osc.frequency.exponentialRampToValueAtTime(150, now + 0.4);
@@ -53,7 +51,6 @@ function playSound(emotion) {
     osc.stop(now + 0.4);
 
   } else if (emotion === 'angry') {
-    // Bip kasar & bergetar cepat
     osc.type = 'sawtooth';
     osc.frequency.setValueAtTime(220, now);
     osc.frequency.setValueAtTime(160, now + 0.08);
@@ -63,7 +60,6 @@ function playSound(emotion) {
     osc.stop(now + 0.2);
 
   } else if (emotion === 'surprised') {
-    // Pitch tinggi mendadak
     osc.type = 'sine';
     osc.frequency.setValueAtTime(300, now);
     osc.frequency.exponentialRampToValueAtTime(1600, now + 0.15);
@@ -73,7 +69,6 @@ function playSound(emotion) {
     osc.stop(now + 0.2);
 
   } else if (emotion === 'normal') {
-    // Bip pendek berkembar
     osc.type = 'sine';
     osc.frequency.setValueAtTime(600, now);
     osc.frequency.setValueAtTime(900, now + 0.08);
@@ -83,7 +78,6 @@ function playSound(emotion) {
     osc.stop(now + 0.15);
 
   } else if (emotion === 'wake') {
-    // Power up chime
     osc.type = 'sine';
     osc.frequency.setValueAtTime(350, now);
     osc.frequency.exponentialRampToValueAtTime(700, now + 0.1);
@@ -94,7 +88,6 @@ function playSound(emotion) {
     osc.stop(now + 0.3);
 
   } else if (emotion === 'sleep') {
-    // Dengkuran robotik berayun lembut
     osc.type = 'sine';
     osc.frequency.setValueAtTime(200, now);
     osc.frequency.exponentialRampToValueAtTime(110, now + 0.6);
@@ -108,29 +101,32 @@ function playSound(emotion) {
 // -------------------------------------------------------------
 // LOGIK TUKAR EMOSI & KAWALAN WIDGET
 // -------------------------------------------------------------
-function setExpression(exp) {
+function setExpression(exp, playCustomSound = true) {
   currentExpression = exp;
-  // Reset sebarang pergerakan jelingan mata tetikus
+
+  // Reset kedudukan mata anak panah
   const eyes = document.querySelectorAll('.eye');
   eyes.forEach(eye => eye.style.transform = '');
 
   visor.className = 'visor ' + (exp === 'normal' ? '' : exp);
-  playSound(exp);
+
+  if (playCustomSound) {
+    playSound(exp);
+  }
+
   resetInactivityTimer();
 }
 
-// 1. Logik Tetikus Ikut Anak Panah (Mouse Tracking) & Pemasa 15 Saat
+// 1. Penjejakan Tetikus (Mouse Tracking) & Pemasa 15 Saat
 document.addEventListener('mousemove', (e) => {
-  // Jika robot sedang tidur, tetikus tidak mengganggunya (perlu klik untuk bangun)
   if (currentExpression === 'sleep') return;
 
   isTrackingMouse = true;
-  visor.className = 'visor'; // Reset ke mod biasa untuk penjejakan mata
+  visor.className = 'visor'; // Reset ke mod pandang biasa semasa mengikut tetikus
 
   const eyes = document.querySelectorAll('.eye');
-  // Kira kedudukan relatif anak panah tetikus berbanding skrin
-  const x = (e.clientX / window.innerWidth - 0.5) * 35; // Jarak pergerakan X
-  const y = (e.clientY / window.innerHeight - 0.5) * 25; // Jarak pergerakan Y
+  const x = (e.clientX / window.innerWidth - 0.5) * 35;
+  const y = (e.clientY / window.innerHeight - 0.5) * 25;
 
   eyes.forEach(eye => {
     eye.style.transform = `translate(${x}px, ${y}px)`;
@@ -142,18 +138,19 @@ document.addEventListener('mousemove', (e) => {
   clearTimeout(mouseIdleTimer);
   mouseIdleTimer = setTimeout(() => {
     isTrackingMouse = false;
-    // Selepas 15 saat tetikus tidak bergerak, jalankan emosi automatik semula
+    // Sambung automatik emosi selepas 15 saat tetikus berhenti
     const nextExp = expressions[Math.floor(Math.random() * expressions.length)];
     setExpression(nextExp);
-  }, 15000); // 15 saat = 15,000ms
+  }, 15000);
 });
 
 // 2. Sentuh / Klik Muka Robot
 robotHead.addEventListener('click', (e) => {
-  e.stopPropagation(); // Elak konflik dengan mousemove
+  e.stopPropagation();
+
   if (currentExpression === 'sleep') {
-    setExpression('normal');
-    playSound('wake');
+    setExpression('normal', false); // Kembalikan paparan mata biasa
+    playSound('wake'); // Mainkan bunyi bangun
   } else {
     isTrackingMouse = false;
     const randomExp = expressions[Math.floor(Math.random() * expressions.length)];
@@ -161,7 +158,7 @@ robotHead.addEventListener('click', (e) => {
   }
 });
 
-// 3. Tukar Emosi Automatik Setiap 1 Minit (Hanya berjalan jika tetikus tidak aktif)
+// 3. Tukar Emosi Automatik Setiap 1 Minit
 setInterval(() => {
   if (currentExpression !== 'sleep' && !isTrackingMouse) {
     const nextExp = expressions[Math.floor(Math.random() * expressions.length)];
@@ -169,11 +166,11 @@ setInterval(() => {
   }
 }, 60000);
 
-// 4. Auto-Blink & Jeling Automatik (Hanya berjalan jika tetikus tidak aktif)
+// 4. Auto-Blink & Jeling Automatik
 setInterval(() => {
   if (currentExpression !== 'sleep' && !isTrackingMouse) {
     const action = Math.random();
-    
+
     if (action < 0.6) {
       visor.classList.add('blink');
       setTimeout(() => visor.classList.remove('blink'), 180);
@@ -187,7 +184,7 @@ setInterval(() => {
   }
 }, 4000);
 
-// 5. Pemasa 15 Minit Tanpa Sentuhan/Pergerakan (Mod Tidur)
+// 5. Pemasa Mod Tidur (15 Minit Tanpa Aktiviti)
 function resetInactivityTimer() {
   clearTimeout(sleepTimer);
   sleepTimer = setTimeout(() => {
@@ -195,7 +192,7 @@ function resetInactivityTimer() {
     currentExpression = 'sleep';
     visor.className = 'visor sleep';
     playSound('sleep');
-  }, 900000); // 15 minit = 900,000ms
+  }, 900000);
 }
 
 resetInactivityTimer();
