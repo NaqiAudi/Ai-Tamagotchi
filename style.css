@@ -1,51 +1,77 @@
 body {
-  background-color: #1e293b;
-  font-family: 'Courier New', Courier, monospace;
+  background-color: #0f172a;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
 }
 
-/* Kerangka Mainan Tamagotchi */
+/* Kerangka Tamagotchi Warna Hijau Matcha Terang (Besar Untuk iPad) */
 .tamagotchi-case {
-  background-color: #ec4899;
-  padding: 30px;
-  border-radius: 50px 50px 40px 40px;
-  box-shadow: 0 10px 0 #be185d;
-  width: 280px;
+  background-color: #8ac926; /* Hijau Matcha Terang */
+  padding: 40px;
+  border-radius: 60px;
+  box-shadow: 0 15px 0 #6a991d, 0 25px 40px rgba(0,0,0,0.5);
+  width: 380px; /* Saiz disesuaikan untuk iPad */
   text-align: center;
 }
 
-/* Skrin Utama */
+/* Skrin Utama Paparan */
 .screen {
-  background-color: #97e681; /* Warna hijau skrin GameBoy */
-  border: 4px solid #475569;
-  border-radius: 12px;
-  padding: 15px;
-  height: 160px;
+  background-color: #050b14;
+  border: 6px solid #475569;
+  border-radius: 25px;
+  padding: 20px;
+  height: 300px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+  box-shadow: inset 0 0 15px rgba(0,255,204,0.15);
 }
 
-/* Muka Robot */
+.status-bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #00f0ff;
+  font-weight: bold;
+}
+
+/* Muka & Mata Neon Blue & Hitam */
 .pet-face {
   display: flex;
-  gap: 20px;
+  gap: 40px;
   margin-top: 15px;
-  transition: all 0.2s ease;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.pet-face:active {
+  transform: scale(1.1);
 }
 
 .eye {
+  width: 55px;
+  height: 75px;
+  background-color: #00f0ff; /* Biru Neon Terang */
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 20px #00f0ff;
+  animation: blink 4s infinite;
+  transition: all 0.2s ease;
+}
+
+.pupil {
   width: 25px;
   height: 35px;
-  background-color: #1e293b;
-  border-radius: 6px;
-  animation: blink 4s infinite;
+  background-color: #000000; /* Anak Mata Hitam */
+  border-radius: 10px;
 }
 
 @keyframes blink {
@@ -53,60 +79,54 @@ body {
   95% { transform: scaleY(0.1); }
 }
 
-/* Mod Emosi (CSS Classes) */
-.happy .eye {
-  height: 20px;
-  border-radius: 15px 15px 0 0;
+/* KOTAK REAKSI & EMOJI */
+.reaction-display {
+  text-align: center;
 }
 
-.angry .eye {
-  transform: rotate(15deg);
-  height: 25px;
+#emojiText {
+  font-size: 1.8rem;
+  margin-bottom: 5px;
 }
 
-.eating .eye {
-  transform: scaleY(0.3);
-}
-
-/* Kotak Teks Dialog */
 #dialogBox {
-  font-size: 0.85rem;
-  color: #0f172a;
+  font-size: 1rem;
+  color: #e2e8f0;
   margin: 0;
-  line-height: 1.2;
+  font-weight: 600;
 }
 
-/* Kawalan & Butang */
+/* BUTANG KAWALAN DI BAWAH */
 .controls {
-  margin-top: 20px;
-}
-
-#apiKeyInput {
-  width: 90%;
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 0.75rem;
-  margin-bottom: 12px;
-}
-
-.button-group {
+  margin-top: 25px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  justify-content: space-around;
+  gap: 12px;
 }
 
-button {
-  background-color: #facc15;
-  border: none;
-  padding: 8px;
-  border-radius: 20px;
+.btn {
+  flex: 1;
+  padding: 15px 10px;
+  font-size: 1rem;
   font-weight: bold;
+  border: none;
+  border-radius: 20px;
   cursor: pointer;
-  box-shadow: 0 4px 0 #ca8a04;
+  transition: transform 0.1s;
 }
 
-button:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 #ca8a04;
+.feed-btn { background-color: #ff9f1c; color: #fff; box-shadow: 0 5px 0 #cc7a00; }
+.bath-btn { background-color: #4cc9f0; color: #fff; box-shadow: 0 5px 0 #2899bc; }
+.play-btn { background-color: #f72585; color: #fff; box-shadow: 0 5px 0 #b5105c; }
+
+.btn:active {
+  transform: translateY(4px);
+  box-shadow: none;
 }
+
+/* MOD EMOSI / REAKSI MUKA */
+.sleeping .eye { height: 10px; background-color: #475569; box-shadow: none; }
+.sleeping .pupil { display: none; }
+.happy .eye { border-radius: 30px 30px 0 0; height: 45px; }
+.eating .eye { transform: scale(0.8); }
+.angry .eye { transform: rotate(20deg); background-color: #ff0055; box-shadow: 0 0 20px #ff0055; }
