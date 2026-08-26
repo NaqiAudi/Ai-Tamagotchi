@@ -1,132 +1,139 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  background-color: #0f172a;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #121826;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  margin: 0;
+  font-family: sans-serif;
 }
 
-/* Kerangka Tamagotchi Warna Hijau Matcha Terang (Besar Untuk iPad) */
-.tamagotchi-case {
-  background-color: #8ac926; /* Hijau Matcha Terang */
-  padding: 40px;
-  border-radius: 60px;
-  box-shadow: 0 15px 0 #6a991d, 0 25px 40px rgba(0,0,0,0.5);
-  width: 380px; /* Saiz disesuaikan untuk iPad */
-  text-align: center;
-}
-
-/* Skrin Utama Paparan */
-.screen {
-  background-color: #050b14;
-  border: 6px solid #475569;
-  border-radius: 25px;
-  padding: 20px;
-  height: 300px;
+.robot-container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  box-shadow: inset 0 0 15px rgba(0,255,204,0.15);
+  gap: 30px;
 }
 
-.status-bar {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.85rem;
-  color: #00f0ff;
-  font-weight: bold;
-}
-
-/* Muka & Mata Neon Blue & Hitam */
-.pet-face {
-  display: flex;
-  gap: 40px;
-  margin-top: 15px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.pet-face:active {
-  transform: scale(1.1);
-}
-
-.eye {
-  width: 55px;
-  height: 75px;
-  background-color: #00f0ff; /* Biru Neon Terang */
-  border-radius: 20px;
+/* Struktur Kepala Robot 3D/Clean */
+.robot-head {
+  position: relative;
+  width: 280px;
+  height: 200px;
+  background: linear-gradient(145deg, #ffffff, #dcdcdc);
+  border-radius: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 0 20px #00f0ff;
-  animation: blink 4s infinite;
-  transition: all 0.2s ease;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 -8px 10px rgba(0,0,0,0.15);
 }
 
-.pupil {
-  width: 25px;
-  height: 35px;
-  background-color: #000000; /* Anak Mata Hitam */
+.ear {
+  position: absolute;
+  width: 20px;
+  height: 60px;
+  background: #334155;
   border-radius: 10px;
+  top: 70px;
 }
+.ear.left { left: -15px; }
+.ear.right { right: -15px; }
 
-@keyframes blink {
-  0%, 90%, 100% { transform: scaleY(1); }
-  95% { transform: scaleY(0.1); }
-}
-
-/* KOTAK REAKSI & EMOJI */
-.reaction-display {
-  text-align: center;
-}
-
-#emojiText {
-  font-size: 1.8rem;
-  margin-bottom: 5px;
-}
-
-#dialogBox {
-  font-size: 1rem;
-  color: #e2e8f0;
-  margin: 0;
-  font-weight: 600;
-}
-
-/* BUTANG KAWALAN DI BAWAH */
-.controls {
-  margin-top: 25px;
+/* Skrin LED Visor Hitam */
+.visor {
+  width: 220px;
+  height: 140px;
+  background-color: #050b14;
+  border-radius: 50px;
   display: flex;
   justify-content: space-around;
-  gap: 12px;
+  align-items: center;
+  padding: 0 25px;
+  box-shadow: inset 0 0 18px rgba(0,0,0,0.9);
+  position: relative;
 }
 
-.btn {
-  flex: 1;
-  padding: 15px 10px;
-  font-size: 1rem;
-  font-weight: bold;
-  border: none;
-  border-radius: 20px;
+/* Mata LED Cyan (Glow Effect) */
+.eye {
+  width: 45px;
+  height: 65px;
+  background-color: #00f3ff;
+  border-radius: 50px;
+  box-shadow: 0 0 20px #00f3ff, 0 0 40px #00f3ff;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* === MOD EKSPRESI MUKA === */
+
+/* Auto-Blink */
+.visor.blink .eye {
+  height: 6px !important;
+  border-radius: 4px !important;
+}
+
+/* Happy */
+.visor.happy .eye {
+  height: 35px;
+  border-radius: 40px 40px 0 0;
+  transform: translateY(-8px);
+}
+
+/* Sad */
+.visor.sad .eye {
+  height: 40px;
+  border-radius: 0 0 40px 40px;
+  transform: translateY(8px);
+}
+
+/* Angry (Tukar Merah & Senget) */
+.visor.angry .eye {
+  background-color: #ff2a5f;
+  box-shadow: 0 0 20px #ff2a5f, 0 0 40px #ff2a5f;
+  height: 45px;
+}
+.visor.angry .left-eye { transform: rotate(20deg); }
+.visor.angry .right-eye { transform: rotate(-20deg); }
+
+/* Surprised */
+.visor.surprised .eye {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+}
+
+/* Sleep */
+.visor.sleep .eye {
+  height: 8px;
+  border-radius: 4px;
+  background-color: #475569;
+  box-shadow: 0 0 8px #475569;
+}
+
+/* Butang Kawalan */
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+button {
+  padding: 10px 18px;
+  background: #1e293b;
+  color: #f8fafc;
+  border: 1px solid #334155;
+  border-radius: 8px;
   cursor: pointer;
-  transition: transform 0.1s;
+  font-weight: bold;
+  transition: 0.2s;
 }
 
-.feed-btn { background-color: #ff9f1c; color: #fff; box-shadow: 0 5px 0 #cc7a00; }
-.bath-btn { background-color: #4cc9f0; color: #fff; box-shadow: 0 5px 0 #2899bc; }
-.play-btn { background-color: #f72585; color: #fff; box-shadow: 0 5px 0 #b5105c; }
-
-.btn:active {
-  transform: translateY(4px);
-  box-shadow: none;
+button:hover {
+  background: #38bdf8;
+  color: #0f172a;
 }
-
-/* MOD EMOSI / REAKSI MUKA */
-.sleeping .eye { height: 10px; background-color: #475569; box-shadow: none; }
-.sleeping .pupil { display: none; }
-.happy .eye { border-radius: 30px 30px 0 0; height: 45px; }
-.eating .eye { transform: scale(0.8); }
-.angry .eye { transform: rotate(20deg); background-color: #ff0055; box-shadow: 0 0 20px #ff0055; }
