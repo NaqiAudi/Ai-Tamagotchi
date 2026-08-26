@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Tamagotchi - Gemini Edition</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="tamagotchi-case">
+    <div class="screen">
+      <!-- Muka / Animasi Robot -->
+      <div class="pet-face" id="petFace">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+      </div>
+      <!-- Dialog dari Gemini -->
+      <p id="dialogBox">Hai! Masukkan API Key anda untuk mulakan.</p>
+    </div>
+
+    <!-- Input API Key & Chat -->
+    <div class="controls">
+      <input type="password" id="apiKeyInput" placeholder="Tampal Gemini API Key di sini...">
+      
+      <div class="button-group">
+        <button onclick="interact('HAPPY')">Sapa / Belai</button>
+        <button onclick="interact('FEED')">Bagi Makan</button>
+        <button onclick="interact('ANGRY')">Usik / Kacau</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
