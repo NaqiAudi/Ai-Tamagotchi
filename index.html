@@ -3,44 +3,369 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Matcha AI Pet - Offline</title>
-  <link rel="stylesheet" href="style.css">
+  <title>ATOM Cash Counter</title>
+  <style>
+    :root {
+      --matcha-dark: #4A5D23;
+      --matcha-primary: #728B36;
+      --matcha-medium: #8A9A5B;
+      --matcha-light: #EBF0DF;
+      --matcha-bg: #F4F7EE;
+      --text-dark: #2C3518;
+      --led-cyan: #00f3ff;
+      --led-red: #ff3366;
+    }
+
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      background-color: var(--matcha-bg); 
+      margin: 0; 
+      padding: 15px; 
+      color: var(--text-dark);
+    }
+
+    .container { 
+      max-width: 450px; 
+      background: white; 
+      border-radius: 20px; 
+      margin: 0 auto; 
+      padding: 20px; 
+      box-shadow: 0 10px 25px rgba(74, 93, 35, 0.1); 
+      border: 1px solid var(--matcha-light);
+    }
+    
+    .header { 
+      text-align: center; 
+      border-bottom: 2px dashed var(--matcha-medium); 
+      padding-bottom: 12px; 
+      margin-bottom: 15px; 
+    }
+
+    /* --- GAYA MUKA ROBOT 3D/LED --- */
+    .robot-head {
+      width: 130px;
+      height: 90px;
+      background: linear-gradient(145deg, #ffffff, #e6e6e6);
+      border-radius: 40px;
+      margin: 0 auto 10px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15), inset 0 -3px 6px rgba(0,0,0,0.1);
+      border: 3px solid var(--matcha-medium);
+      position: relative;
+    }
+
+    /* Telinga Robot */
+    .robot-head::before, .robot-head::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 26px;
+      background: var(--matcha-primary);
+      border-radius: 6px;
+      top: 32px;
+    }
+    .robot-head::before { left: -10px; }
+    .robot-head::after { right: -10px; }
+
+    /* Visor Hitam Skrin LED */
+    .visor {
+      width: 100px;
+      height: 60px;
+      background-color: #0d1117;
+      border-radius: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      padding: 0 10px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Mata LED Cyan */
+    .eye {
+      width: 18px;
+      height: 24px;
+      background-color: var(--led-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--led-cyan);
+      transition: all 0.2s ease;
+    }
+
+    /* --- EKSPRESI MUKA ROBOT --- */
+    /* Kelip Mata */
+    .visor.blink .eye {
+      height: 3px !important;
+      border-radius: 2px !important;
+    }
+
+    /* Happy / Senyum */
+    .visor.happy .eye {
+      height: 12px;
+      border-radius: 12px 12px 0 0;
+      transform: translateY(-3px);
+    }
+
+    /* Surprised / Terkejut */
+    .visor.surprised .eye {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+    }
+
+    /* Sleep / Tidur */
+    .visor.sleep .eye {
+      height: 4px;
+      border-radius: 2px;
+      background-color: #557788;
+      box-shadow: 0 0 4px #557788;
+    }
+
+    /* Angry / Marah */
+    .visor.angry .eye {
+      height: 14px;
+      background-color: var(--led-red);
+      box-shadow: 0 0 12px var(--led-red);
+      clip-path: polygon(0 0, 100% 40%, 100% 100%, 0 100%);
+    }
+
+    .header h2 { 
+      margin: 0; 
+      color: var(--matcha-dark); 
+      font-size: 20px; 
+      font-weight: 800; 
+    }
+
+    .live-clock {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--matcha-dark);
+      margin-top: 6px;
+      background: var(--matcha-light);
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    .row { 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      margin: 10px 0; 
+      padding: 4px 8px;
+      background: #FAFCF7;
+      border-radius: 10px;
+    }
+    
+    .note-img { 
+      width: 70px; 
+      height: 36px; 
+      object-fit: cover; 
+      border-radius: 6px; 
+      border: 1px solid #D5E0C2; 
+    }
+
+    .row input { 
+      width: 75px; 
+      padding: 8px; 
+      font-size: 16px; 
+      text-align: center; 
+      border: 1.5px solid var(--matcha-medium); 
+      border-radius: 8px; 
+      outline: none; 
+      font-weight: bold;
+    }
+
+    .row .subtotal { 
+      width: 110px; 
+      text-align: right; 
+      color: var(--matcha-dark); 
+      font-weight: 700; 
+      font-size: 15px; 
+    }
+    
+    .total-box { 
+      margin-top: 20px; 
+      padding: 16px; 
+      background: var(--matcha-light); 
+      border-radius: 14px; 
+      text-align: center; 
+      border: 1px solid #D8E3C3;
+    }
+
+    .total-box h2 { 
+      margin: 6px 0 0 0; 
+      color: var(--matcha-dark); 
+      font-size: 28px; 
+      font-weight: 800;
+    }
+    
+    .btn-group { 
+      display: flex; 
+      gap: 8px; 
+      margin-top: 20px; 
+    }
+
+    button { 
+      flex: 1; 
+      padding: 12px 6px; 
+      border: none; 
+      border-radius: 10px; 
+      font-size: 15px; 
+      font-weight: bold; 
+      cursor: pointer; 
+      color: white; 
+    }
+
+    .btn-clear { background-color: #D9534F; }
+    .btn-share { background-color: var(--matcha-primary); }
+    .btn-trello { background-color: #0079BF; }
+  </style>
 </head>
 <body>
 
-  <div class="tamagotchi-case">
-    <div class="screen">
-      <!-- Status Bar -->
-      <div class="status-bar">
-        <span id="hungerStatus">Lapar: OK</span>
-        <span id="cleanStatus">Kebersihan: OK</span>
-      </div>
-
-      <!-- Muka / Emoji Pet (Besar & Interaktif) -->
-      <div class="pet-face" id="petFace" onclick="touchPet()">
-        <div class="eye left">
-          <div class="pupil"></div>
-        </div>
-        <div class="eye right">
-          <div class="pupil"></div>
-        </div>
-      </div>
-      
-      <!-- Paparan Teks & Emoji Reaksi -->
-      <div class="reaction-display">
-        <div id="emojiText">ฅ(•⩊•)ฅ</div>
-        <p id="dialogBox">Hai! Saya Matcha. sentuh muka saya!</p>
+<div class="container">
+  <div class="header">
+    <!-- Kepala Robot Animated -->
+    <div class="robot-head" onclick="changeEmotionTemp('happy', 2000)">
+      <div class="visor" id="robotVisor">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
       </div>
     </div>
 
-    <!-- Butang Tindakan Khas iPad -->
-    <div class="controls">
-      <button class="btn feed-btn" onclick="feedPet()">🍕 Makan</button>
-      <button class="btn bath-btn" onclick="bathPet()">🛁 Mandi</button>
-      <button class="btn play-btn" onclick="playPet()">🎮 Main</button>
-    </div>
+    <h2>ATOM Cash Counter</h2>
+    <div id="liveClock" class="live-clock">--:--:--</div>
   </div>
 
-  <script src="script.js"></script>
+  <div id="denominations"></div>
+
+  <div class="total-box">
+    <span>Jumlah Keseluruhan</span>
+    <h2 id="grandTotal">RM 0.00</h2>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn-clear" onclick="clearAll()">Clear</button>
+    <button class="btn-share" onclick="shareData('whatsapp')">WhatsApp</button>
+    <button class="btn-trello" onclick="shareData('trello')">Trello</button>
+  </div>
+</div>
+
+<script>
+  const notes = [
+    { value: 100, label: 'RM 100', img: 'RM100.jpeg' },
+    { value: 50,  label: 'RM 50',  img: 'RM50.jpeg' },
+    { value: 20,  label: 'RM 20',  img: 'RM20.jpeg' },
+    { value: 10,  label: 'RM 10',  img: 'RM10.jpeg' },
+    { value: 5,   label: 'RM 5',   img: 'RM5.jpeg' },
+    { value: 1,   label: 'RM 1',   img: 'RM1.jpeg' },
+    { value: 0.50, label: '50 sen', img: '50SEN.jpeg' },
+    { value: 0.20, label: '20 sen', img: '20SEN.jpeg' },
+    { value: 0.10, label: '10 sen', img: '10SEN.jpeg' },
+    { value: 0.05, label: '5 sen',  img: '5SEN.jpeg' }
+  ];
+
+  const container = document.getElementById('denominations');
+  const visor = document.getElementById('robotVisor');
+
+  notes.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `
+      <img src="${item.img}" alt="${item.label}" class="note-img">
+      <span style="color:#8A9A5B; font-weight:bold;">x</span>
+      <input type="number" min="0" id="input-${item.value}" oninput="calculate()" placeholder="0">
+      <span class="subtotal" id="sub-${item.value}">= RM 0.00</span>
+    `;
+    container.appendChild(row);
+  });
+
+  // --- LOGIK ANIMASI ROBOT ---
+  // Kelip mata automatik setiap 4 saat
+  setInterval(() => {
+    if (!visor.classList.contains('sleep')) {
+      visor.classList.add('blink');
+      setTimeout(() => visor.classList.remove('blink'), 200);
+    }
+  }, 4000);
+
+  function changeEmotionTemp(emotion, duration) {
+    visor.className = 'visor ' + emotion;
+    setTimeout(() => { visor.className = 'visor'; }, duration);
+  }
+
+  function updateClock() {
+    const now = new Date();
+    const options = { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+    document.getElementById('liveClock').innerText = now.toLocaleString('ms-MY', options);
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  function calculate() {
+    let grandTotal = 0;
+    notes.forEach(item => {
+      const qty = parseFloat(document.getElementById(`input-${item.value}`).value) || 0;
+      const subtotal = qty * item.value;
+      grandTotal += subtotal;
+      document.getElementById(`sub-${item.value}`).innerText = `= RM ${subtotal.toFixed(2)}`;
+    });
+    document.getElementById('grandTotal').innerText = `RM ${grandTotal.toFixed(2)}`;
+    
+    // Robot senyum bila memasukkan nilai kiraan
+    if (grandTotal > 0) {
+      visor.className = 'visor happy';
+    } else {
+      visor.className = 'visor';
+    }
+  }
+
+  function clearAll() {
+    notes.forEach(item => {
+      document.getElementById(`input-${item.value}`).value = '';
+      document.getElementById(`sub-${item.value}`).innerText = '= RM 0.00';
+    });
+    document.getElementById('grandTotal').innerText = 'RM 0.00';
+    // Robot terkejut/tidur sebentar bila tekan reset
+    changeEmotionTemp('surprised', 1500);
+  }
+
+  function shareData(platform) {
+    const trelloEmail = "mohdnaqi+bbtemvemk2ujvojxndfw@boards.trello.com";
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = String(now.getFullYear()).slice(-2);
+    const formattedDate = `${day}/${month}/${year}`;
+
+    let text = "=== KIRAAN WANG TUNAI ===\n\n";
+    notes.forEach(item => {
+      const qty = document.getElementById(`input-${item.value}`).value || 0;
+      if (qty > 0) {
+        text += `${item.label} x ${qty} = RM ${(qty * item.value).toFixed(2)}\n`;
+      }
+    });
+    text += "\n-------------------------\n";
+    text += `TOTAL: ${document.getElementById('grandTotal').innerText}\n`;
+    text += `Masa Kiraan: ${document.getElementById('liveClock').innerText}`;
+
+    if (platform === 'trello') {
+      const cardTitle = encodeURIComponent(`Cash ${formattedDate}`);
+      const cardDescription = encodeURIComponent(text);
+      window.location.href = `mailto:${trelloEmail}?subject=${cardTitle}&body=${cardDescription}`;
+    } else {
+      if (navigator.share) {
+        navigator.share({ title: 'Kiraan Cash', text: text });
+      } else {
+        navigator.clipboard.writeText(text);
+        alert("Teks kiraan telah disalin! Boleh paste terus di WhatsApp.");
+      }
+    }
+  }
+</script>
+
 </body>
 </html>
