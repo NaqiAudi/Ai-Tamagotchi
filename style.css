@@ -20,7 +20,6 @@ body {
   gap: 30px;
 }
 
-/* Struktur Kepala Robot 3D/Clean */
 .robot-head {
   position: relative;
   width: 280px;
@@ -44,7 +43,6 @@ body {
 .ear.left { left: -15px; }
 .ear.right { right: -15px; }
 
-/* Skrin LED Visor Hitam */
 .visor {
   width: 220px;
   height: 140px;
@@ -58,7 +56,6 @@ body {
   position: relative;
 }
 
-/* Mata LED Cyan (Glow Effect) */
 .eye {
   width: 45px;
   height: 65px;
@@ -68,29 +65,22 @@ body {
   transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* === MOD EKSPRESI MUKA === */
-
-/* Auto-Blink */
+/* Mod Ekspresi */
 .visor.blink .eye {
   height: 6px !important;
   border-radius: 4px !important;
 }
 
-/* Happy */
 .visor.happy .eye {
   height: 35px;
   border-radius: 40px 40px 0 0;
-  transform: translateY(-8px);
 }
 
-/* Sad */
 .visor.sad .eye {
   height: 40px;
   border-radius: 0 0 40px 40px;
-  transform: translateY(8px);
 }
 
-/* Angry (Tukar Merah & Senget) */
 .visor.angry .eye {
   background-color: #ff2a5f;
   box-shadow: 0 0 20px #ff2a5f, 0 0 40px #ff2a5f;
@@ -99,14 +89,12 @@ body {
 .visor.angry .left-eye { transform: rotate(20deg); }
 .visor.angry .right-eye { transform: rotate(-20deg); }
 
-/* Surprised */
 .visor.surprised .eye {
   width: 55px;
   height: 55px;
   border-radius: 50%;
 }
 
-/* Sleep */
 .visor.sleep .eye {
   height: 8px;
   border-radius: 4px;
@@ -114,7 +102,6 @@ body {
   box-shadow: 0 0 8px #475569;
 }
 
-/* Butang Kawalan */
 .controls {
   display: flex;
   gap: 10px;
@@ -130,7 +117,6 @@ button {
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
-  transition: 0.2s;
 }
 
 button:hover {
