@@ -3,31 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Tamagotchi - Gemini Edition</title>
+  <title>Matcha AI Pet - Offline</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <div class="tamagotchi-case">
     <div class="screen">
-      <!-- Muka / Animasi Robot -->
-      <div class="pet-face" id="petFace">
-        <div class="eye left"></div>
-        <div class="eye right"></div>
+      <!-- Status Bar -->
+      <div class="status-bar">
+        <span id="hungerStatus">Lapar: OK</span>
+        <span id="cleanStatus">Kebersihan: OK</span>
       </div>
-      <!-- Dialog dari Gemini -->
-      <p id="dialogBox">Hai! Masukkan API Key anda untuk mulakan.</p>
+
+      <!-- Muka / Emoji Pet (Besar & Interaktif) -->
+      <div class="pet-face" id="petFace" onclick="touchPet()">
+        <div class="eye left">
+          <div class="pupil"></div>
+        </div>
+        <div class="eye right">
+          <div class="pupil"></div>
+        </div>
+      </div>
+      
+      <!-- Paparan Teks & Emoji Reaksi -->
+      <div class="reaction-display">
+        <div id="emojiText">ฅ(•⩊•)ฅ</div>
+        <p id="dialogBox">Hai! Saya Matcha. sentuh muka saya!</p>
+      </div>
     </div>
 
-    <!-- Input API Key & Butang Interaksi -->
+    <!-- Butang Tindakan Khas iPad -->
     <div class="controls">
-      <input type="password" id="apiKeyInput" placeholder="Tampal Gemini API Key di sini...">
-      
-      <div class="button-group">
-        <button type="button" onclick="interact('HAPPY')">Sapa / Belai</button>
-        <button type="button" onclick="interact('FEED')">Bagi Makan</button>
-        <button type="button" onclick="interact('ANGRY')">Usik / Kacau</button>
-      </div>
+      <button class="btn feed-btn" onclick="feedPet()">🍕 Makan</button>
+      <button class="btn bath-btn" onclick="bathPet()">🛁 Mandi</button>
+      <button class="btn play-btn" onclick="playPet()">🎮 Main</button>
     </div>
   </div>
 
