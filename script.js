@@ -10,11 +10,9 @@ async function interact(action) {
     return;
   }
 
-  // Tukar emosi awal berdasarkan butang
   setEmotionUI(action.toLowerCase());
   dialogBox.innerText = "Tengah fikir...";
 
-  // Bina prompt mengikut tindakan
   let promptText = "";
   if (action === 'HAPPY') promptText = "Tuan kamu menyapa/membelai kamu. Jawab pendek (bawah 10 perkataan) dengan gaya comel dan gembira.";
   if (action === 'FEED') promptText = "Tuan kamu memberi kamu makan. Jawab pendek (bawah 10 perkataan) menunjukkan kamu kenyang dan suka.";
@@ -32,13 +30,12 @@ async function interact(action) {
 function setEmotionUI(emotionClass) {
   petFace.className = 'pet-face ' + emotionClass;
   setTimeout(() => {
-    petFace.className = 'pet-face'; // Kembali normal selepas 3 saat
+    petFace.className = 'pet-face';
   }, 3000);
 }
 
-// Fungsi utama panggil Gemini API
+// Fungsi dipanggil menggunakan model gemini-1.5-flash
 async function callGeminiAPI(key, prompt) {
-  // Guna model gemini-1.5-flash yang standard
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
 
   const response = await fetch(url, {
@@ -46,15 +43,15 @@ async function callGeminiAPI(key, prompt) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       contents: [{
-        parts: [{ text: "Bertindak sebagai peliharaan digital Tamagotchi yang comel. Jawab dalam Bahasa Melayu kurang 10 perkataan: " + prompt }]
+        parts: [{ text: "Bertindak sebagai peliharaan digital Tamagotchi yang comel. Sentiasa beri respon ringkas dalam Bahasa Melayu: " + prompt }]
       }]
     })
   });
 
   if (!response.ok) {
-    const errorData = await response.json();
-    console.error("Gemini Error:", errorData);
-    throw new Error("API call failed");
+    const err = await response.json();
+    console.error("Gemini Error Detail:", err);
+    throw new Error("API Request Failed");
   }
 
   const data = await response.json();
